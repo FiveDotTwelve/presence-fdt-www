@@ -29,7 +29,7 @@
 # FDTPresence 🚀
 
 <p>
-FDTPresence is a Slack bot built with Node.js, Express, and TypeScript and integrated with the Google Sheets API. It automates weekday availability checks by messaging team members, who can respond “Yes” or “No” with a reason if unavailable. Responses, including reasons for unavailability and any missed responses, are logged in Google Sheets and sent to the project manager, simplifying team management and status tracking.
+FDTPresence is a Slack bot built with Node.js, Express, and TypeScript and integrated with the Google Sheets API. It automates weekday availability checks by messaging external team members, who can respond “Yes” or “No” with a reason if unavailable. All responses, including reasons for unavailability and any missed replies, are logged in Google Sheets and sent to the project manager, streamlining management and status tracking for external team members.
 </p>
 
 ---
