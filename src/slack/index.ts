@@ -4,7 +4,7 @@ import { DenyPresence } from './actions/denypresence';
 import { CheckPresence } from './lib/checkPresence';
 import { DenyReasonModal } from './view/denyReasonModal';
 
-export const Manager = async () => {
+export const SlackApp = async () => {
   await CheckPresence();
   ConfirmPresence(app);
   DenyPresence(app);
