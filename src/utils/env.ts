@@ -9,6 +9,9 @@ const envSchema = z.object({
   NODE_ENV: z.string(),
   SLACK_BOT_TOKEN: z.string(),
   SLACK_SIGNING_SECRET: z.string(),
+  SHEET_SERVICE_ACCOUNT_PATH: z.string(),
+  GOOGLE_SHEET_ID: z.string(),
+  GOOGLE_SHEET_RANGE: z.string(),
 });
 
 type Env = z.infer<typeof envSchema>;
