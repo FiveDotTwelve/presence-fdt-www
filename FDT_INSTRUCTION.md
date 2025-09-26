@@ -8,6 +8,12 @@
 
 ---
 
+## Google Sheet
+
+This Google Sheet tracks external employees’ daily availability. It stores their personal info, Slack IDs, assigned project managers, current status, response timestamps, reasons for absence, and working hours, allowing the bot to send messages and notify PMs automatically.
+
+Some columns, such as Name, SlackID, Email, PM, pmID, checkHour, and workingHours, are filled in manually. The bot automatically updates columns like Status, lastConfirmed, and Reason
+
 ## Daily Message
 
 The bot sends a message to each external employee at a specified time, asking if they are available today.
