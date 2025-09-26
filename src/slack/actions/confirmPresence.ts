@@ -9,7 +9,8 @@ export const ConfirmPresence = (app: App) => {
     await ack();
 
     const actionBody = body as any;
-
+    
+    
     try {
       await client.chat.update({
         channel: actionBody.channel.id,

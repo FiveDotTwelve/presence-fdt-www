@@ -9,6 +9,12 @@ export const CheckPresence = async () => {
   const users = await GetUserSheet();
 
   for (const user of users) {
+
+    const status = app.client.users.profile.get({
+      user: user.slackId,
+    })
+
+    if((await status).profile?.status_text === "Vacationing") continue
     if (!user.checkHour || !user.slackId || !user.workingHours) continue;
     if (!IsWithinWorkingHours(user.checkHour, user.workingHours)) continue;
 
