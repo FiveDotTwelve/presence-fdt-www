@@ -3,7 +3,7 @@
 </p>
 
 <p>
-⭐ Below you will find a list of available commands, along with explanations of how they work and what responses they return. 🚀✨
+⭐ Below is an overview of how the bot works. 🚀✨
 </p>
 
 ---
