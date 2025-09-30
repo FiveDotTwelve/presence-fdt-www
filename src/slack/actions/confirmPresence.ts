@@ -3,12 +3,15 @@
 import { App } from '@slack/bolt';
 import { sheets } from '../../configs/google';
 import { ENV } from '../../utils/env';
+import { confirmed } from '../lib/checkPresence';
 
 export const ConfirmPresence = (app: App) => {
   return app.action('confirm_presence', async ({ ack, body, client }) => {
     await ack();
 
     const actionBody = body as any;
+
+    confirmed.set(actionBody.channel.id, true);
 
     try {
       await client.chat.update({

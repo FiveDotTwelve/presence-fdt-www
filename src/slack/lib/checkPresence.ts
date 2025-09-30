@@ -5,6 +5,8 @@ import { sheets } from '../../configs/google';
 import { ENV } from '../../utils/env';
 import { IsWithinWorkingHours } from './isWithinWorkingHours';
 
+export const confirmed = new Map<string, boolean>();
+
 export const CheckPresence = async () => {
   const users = await GetUserSheet();
 
@@ -19,6 +21,7 @@ export const CheckPresence = async () => {
 
     const [hour, minute] = user.checkHour.split(':').map(Number);
     const cronExpr = `${minute} ${hour} * * 1-5`;
+
 
     nodeCron.schedule(
       cronExpr,
@@ -57,6 +60,7 @@ export const CheckPresence = async () => {
             ],
           });
 
+          if(!confirmed.get(user.slackId)){
           setTimeout(async () => {
             try {
               await app.client.chat.update({
@@ -109,6 +113,7 @@ export const CheckPresence = async () => {
               console.error(`Error updating message for ${user.slackId}:`, err);
             }
           }, 3600000);
+          }
         } catch (error) {
           console.error(`Error sending message to ${user.slackId}:`, error);
         }
