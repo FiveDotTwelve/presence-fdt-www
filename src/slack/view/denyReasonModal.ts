@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { App } from '@slack/bolt';
 import { sheets } from '../../configs/google';
 import { ENV } from '../../utils/env';
@@ -36,7 +34,7 @@ export const DenyReasonModal = (app: App) => {
         const pmId = rows[rowIndex][pmIndex];
         await sheets.spreadsheets.values.update({
           spreadsheetId: ENV.GOOGLE_SHEET_ID,
-          range: `List!F${sheetRow}:H${sheetRow}`,
+          range: `Sheet1!F${sheetRow}:H${sheetRow}`,
           valueInputOption: 'RAW',
           requestBody: {
             values: [['Absent', new Date().toLocaleString(), reason]],

@@ -33,7 +33,7 @@ const ConfirmPresence = (app) => {
                 const sheetRow = rowIndex + 2;
                 await google_1.sheets.spreadsheets.values.update({
                     spreadsheetId: process.env.GOOGLE_SHEET_ID,
-                    range: `List!F${sheetRow}:H${sheetRow}`,
+                    range: `Sheet1!F${sheetRow}:H${sheetRow}`,
                     valueInputOption: 'RAW',
                     requestBody: {
                         values: [['Present', new Date().toLocaleString(), '-']],
