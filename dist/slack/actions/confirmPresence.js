@@ -4,10 +4,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConfirmPresence = void 0;
 const google_1 = require("../../configs/google");
 const env_1 = require("../../utils/env");
+const checkPresence_1 = require("../lib/checkPresence");
 const ConfirmPresence = (app) => {
     return app.action('confirm_presence', async ({ ack, body, client }) => {
         await ack();
         const actionBody = body;
+        checkPresence_1.confirmed.set(actionBody.channel.id, true);
         try {
             await client.chat.update({
                 channel: actionBody.channel.id,

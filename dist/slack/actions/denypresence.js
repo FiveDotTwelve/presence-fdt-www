@@ -2,10 +2,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DenyPresence = void 0;
+const checkPresence_1 = require("../lib/checkPresence");
 const DenyPresence = (app) => {
     return app.action('deny_presence', async ({ ack, body }) => {
         await ack();
         const actionBody = body;
+        checkPresence_1.confirmed.set(actionBody.channel.id, true);
         try {
             app.client.views.open({
                 trigger_id: actionBody.trigger_id,

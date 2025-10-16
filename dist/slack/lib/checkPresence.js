@@ -3,13 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CheckPresence = void 0;
+exports.CheckPresence = exports.confirmed = void 0;
 const node_cron_1 = __importDefault(require("node-cron"));
 const slack_1 = require("../../configs/slack");
 const getUserSheet_1 = require("../../services/getUserSheet");
 const google_1 = require("../../configs/google");
 const env_1 = require("../../utils/env");
 const isWithinWorkingHours_1 = require("./isWithinWorkingHours");
+exports.confirmed = new Map();
 const CheckPresence = async () => {
     const users = await (0, getUserSheet_1.GetUserSheet)();
     for (const user of users) {
@@ -58,57 +59,59 @@ const CheckPresence = async () => {
                         },
                     ],
                 });
-                setTimeout(async () => {
-                    try {
-                        await slack_1.app.client.chat.update({
-                            channel: res.channel,
-                            ts: res.ts,
-                            text: `⏰ Hello <@${user.slackId}>, the time for response has passed.`,
-                            blocks: [
-                                {
-                                    type: 'section',
-                                    text: {
-                                        type: 'mrkdwn',
-                                        text: `⏰ Hello <@${user.slackId}>, the time for response has passed.`,
-                                    },
-                                },
-                            ],
-                        });
-                        const { data } = await google_1.sheets.spreadsheets.values.get({
-                            spreadsheetId: env_1.ENV.GOOGLE_SHEET_ID,
-                            range: env_1.ENV.GOOGLE_SHEET_RANGE,
-                        });
-                        const rows = data.values || [];
-                        const rowIndex = rows.findIndex((row) => row[1] === user.slackId);
-                        if (rowIndex !== -1) {
-                            const sheetRow = rowIndex + 2;
-                            await google_1.sheets.spreadsheets.values.update({
-                                spreadsheetId: env_1.ENV.GOOGLE_SHEET_ID,
-                                range: `Sheet1!F${sheetRow}:H${sheetRow}`,
-                                valueInputOption: 'RAW',
-                                requestBody: { values: [['No response', new Date().toLocaleString(), '-']] },
-                            });
-                        }
-                        if (user.pmId) {
-                            await slack_1.app.client.chat.postMessage({
-                                channel: user.pmId,
-                                text: `⚠️ <@${user.slackId}> did not respond within 1 hour.`,
+                if (!exports.confirmed.get(user.slackId)) {
+                    setTimeout(async () => {
+                        try {
+                            await slack_1.app.client.chat.update({
+                                channel: res.channel,
+                                ts: res.ts,
+                                text: `⏰ Hello <@${user.slackId}>, the time for response has passed.`,
                                 blocks: [
                                     {
                                         type: 'section',
                                         text: {
                                             type: 'mrkdwn',
-                                            text: `⚠️ <@${user.slackId}> did not respond within 1 hour.`,
+                                            text: `⏰ Hello <@${user.slackId}>, the time for response has passed.`,
                                         },
                                     },
                                 ],
                             });
+                            const { data } = await google_1.sheets.spreadsheets.values.get({
+                                spreadsheetId: env_1.ENV.GOOGLE_SHEET_ID,
+                                range: env_1.ENV.GOOGLE_SHEET_RANGE,
+                            });
+                            const rows = data.values || [];
+                            const rowIndex = rows.findIndex((row) => row[1] === user.slackId);
+                            if (rowIndex !== -1) {
+                                const sheetRow = rowIndex + 2;
+                                await google_1.sheets.spreadsheets.values.update({
+                                    spreadsheetId: env_1.ENV.GOOGLE_SHEET_ID,
+                                    range: `Sheet1!F${sheetRow}:H${sheetRow}`,
+                                    valueInputOption: 'RAW',
+                                    requestBody: { values: [['No response', new Date().toLocaleString(), '-']] },
+                                });
+                            }
+                            if (user.pmId) {
+                                await slack_1.app.client.chat.postMessage({
+                                    channel: user.pmId,
+                                    text: `⚠️ <@${user.slackId}> did not respond within 1 hour.`,
+                                    blocks: [
+                                        {
+                                            type: 'section',
+                                            text: {
+                                                type: 'mrkdwn',
+                                                text: `⚠️ <@${user.slackId}> did not respond within 1 hour.`,
+                                            },
+                                        },
+                                    ],
+                                });
+                            }
                         }
-                    }
-                    catch (err) {
-                        console.error(`Error updating message for ${user.slackId}:`, err);
-                    }
-                }, 3600000);
+                        catch (err) {
+                            console.error(`Error updating message for ${user.slackId}:`, err);
+                        }
+                    }, 3600000);
+                }
             }
             catch (error) {
                 console.error(`Error sending message to ${user.slackId}:`, error);

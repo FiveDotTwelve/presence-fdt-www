@@ -1,5 +1,4 @@
 "use strict";
-/* eslint-disable @typescript-eslint/no-explicit-any */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DenyReasonModal = void 0;
 const google_1 = require("../../configs/google");
