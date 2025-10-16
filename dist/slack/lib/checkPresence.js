@@ -59,6 +59,7 @@ const CheckPresence = async () => {
                         },
                     ],
                 });
+                console.log('confirmed: ', exports.confirmed);
                 if (!exports.confirmed.get(user.slackId)) {
                     setTimeout(async () => {
                         try {
@@ -81,8 +82,12 @@ const CheckPresence = async () => {
                                 range: env_1.ENV.GOOGLE_SHEET_RANGE,
                             });
                             const rows = data.values || [];
+                            console.log('rows:', rows);
                             const rowIndex = rows.findIndex((row) => row[1] === user.slackId);
-                            if (rowIndex !== -1) {
+                            const statusRow = rows[rowIndex][5];
+                            console.log('rowIndex: ', rowIndex, rows[rowIndex]);
+                            console.log('statusRow: ', statusRow);
+                            if (rowIndex !== -1 && statusRow !== 'Present') {
                                 const sheetRow = rowIndex + 2;
                                 await google_1.sheets.spreadsheets.values.update({
                                     spreadsheetId: env_1.ENV.GOOGLE_SHEET_ID,
@@ -90,27 +95,27 @@ const CheckPresence = async () => {
                                     valueInputOption: 'RAW',
                                     requestBody: { values: [['No response', new Date().toLocaleString(), '-']] },
                                 });
-                            }
-                            if (user.pmId) {
-                                await slack_1.app.client.chat.postMessage({
-                                    channel: user.pmId,
-                                    text: `⚠️ <@${user.slackId}> did not respond within 1 hour.`,
-                                    blocks: [
-                                        {
-                                            type: 'section',
-                                            text: {
-                                                type: 'mrkdwn',
-                                                text: `⚠️ <@${user.slackId}> did not respond within 1 hour.`,
+                                if (user.pmId) {
+                                    await slack_1.app.client.chat.postMessage({
+                                        channel: user.pmId,
+                                        text: `⚠️ <@${user.slackId}> did not respond within 1 hour.`,
+                                        blocks: [
+                                            {
+                                                type: 'section',
+                                                text: {
+                                                    type: 'mrkdwn',
+                                                    text: `⚠️ <@${user.slackId}> did not respond within 1 hour.`,
+                                                },
                                             },
-                                        },
-                                    ],
-                                });
+                                        ],
+                                    });
+                                }
                             }
                         }
                         catch (err) {
                             console.error(`Error updating message for ${user.slackId}:`, err);
                         }
-                    }, 3600000);
+                    }, 300000);
                 }
             }
             catch (error) {
