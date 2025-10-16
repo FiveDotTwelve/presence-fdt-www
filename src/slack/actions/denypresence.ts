@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { App } from '@slack/bolt';
+import { confirmed } from '../lib/checkPresence';
 export const DenyPresence = (app: App) => {
   return app.action('deny_presence', async ({ ack, body }) => {
     await ack();
 
     const actionBody = body as any;
+
+    confirmed.set(actionBody.channel.id, true);
 
     try {
       app.client.views.open({
