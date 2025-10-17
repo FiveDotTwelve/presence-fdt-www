@@ -84,10 +84,15 @@ const CheckPresence = async () => {
                             const rows = data.values || [];
                             console.log('rows:', rows);
                             const rowIndex = rows.findIndex((row) => row[1] === user.slackId);
-                            const statusRow = rows[rowIndex][5];
+                            const statusRow = rows[rowIndex][5]; // e.g. 'Present' or 'Absent'
+                            const timestamp = rows[rowIndex][6]; // e.g. '10/17/2025, 11:01:45 AM'
+                            // Parse date from timestamp
+                            const rowDate = new Date(timestamp).toDateString();
+                            const todayDate = new Date().toDateString();
                             console.log('rowIndex: ', rowIndex, rows[rowIndex]);
                             console.log('statusRow: ', statusRow);
-                            if (rowIndex !== -1 && statusRow !== 'Present') {
+                            console.log('rowDate !== todayDate: ', rowDate !== todayDate);
+                            if (rowIndex !== -1 && statusRow !== 'Present' && rowDate !== todayDate) {
                                 const sheetRow = rowIndex + 2;
                                 await google_1.sheets.spreadsheets.values.update({
                                     spreadsheetId: env_1.ENV.GOOGLE_SHEET_ID,
