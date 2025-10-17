@@ -41,6 +41,18 @@ const ConfirmPresence = (app) => {
                         values: [['Present', new Date().toLocaleString(), '-']],
                     },
                 });
+                const userName = rows[rowIndex][0];
+                const slackId = rows[rowIndex][1];
+                const userEmail = rows[rowIndex][2];
+                await google_1.sheets.spreadsheets.values.append({
+                    spreadsheetId: env_1.ENV.GOOGLE_SHEET_ID,
+                    range: 'History!A:I',
+                    valueInputOption: 'RAW',
+                    insertDataOption: 'INSERT_ROWS',
+                    requestBody: {
+                        values: [[userName, slackId, userEmail, 'Present', '-', new Date().toLocaleString()]],
+                    },
+                });
             }
         }
         catch (error) {

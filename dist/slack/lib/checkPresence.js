@@ -84,6 +84,9 @@ const CheckPresence = async () => {
                             const rows = data.values || [];
                             console.log('rows:', rows);
                             const rowIndex = rows.findIndex((row) => row[1] === user.slackId);
+                            const userName = rows[rowIndex][0];
+                            const slackId = rows[rowIndex][1];
+                            const userEmail = rows[rowIndex][2];
                             const statusRow = rows[rowIndex][5]; // e.g. 'Present' or 'Absent'
                             const timestamp = rows[rowIndex][6]; // e.g. '10/17/2025, 11:01:45 AM'
                             // Parse date from timestamp
@@ -99,6 +102,24 @@ const CheckPresence = async () => {
                                     range: `Sheet1!F${sheetRow}:H${sheetRow}`,
                                     valueInputOption: 'RAW',
                                     requestBody: { values: [['No response', new Date().toLocaleString(), '-']] },
+                                });
+                                await google_1.sheets.spreadsheets.values.append({
+                                    spreadsheetId: env_1.ENV.GOOGLE_SHEET_ID,
+                                    range: 'History!A:I',
+                                    valueInputOption: 'RAW',
+                                    insertDataOption: 'INSERT_ROWS',
+                                    requestBody: {
+                                        values: [
+                                            [
+                                                userName,
+                                                slackId,
+                                                userEmail,
+                                                'No response',
+                                                '-',
+                                                new Date().toLocaleString(),
+                                            ],
+                                        ],
+                                    },
                                 });
                                 if (user.pmId) {
                                     await slack_1.app.client.chat.postMessage({

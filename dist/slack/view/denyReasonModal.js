@@ -35,6 +35,18 @@ const DenyReasonModal = (app) => {
                         values: [['Absent', new Date().toLocaleString(), reason]],
                     },
                 });
+                const userName = rows[rowIndex][0];
+                const slackId = rows[rowIndex][1];
+                const userEmail = rows[rowIndex][2];
+                await google_1.sheets.spreadsheets.values.append({
+                    spreadsheetId: env_1.ENV.GOOGLE_SHEET_ID,
+                    range: 'History!A:I',
+                    valueInputOption: 'RAW',
+                    insertDataOption: 'INSERT_ROWS',
+                    requestBody: {
+                        values: [[userName, slackId, userEmail, 'Absent', '-', new Date().toLocaleString()]],
+                    },
+                });
                 if (pmId) {
                     await client.chat.postMessage({
                         channel: pmId,
