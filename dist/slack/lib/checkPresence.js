@@ -141,7 +141,7 @@ const CheckPresence = async () => {
                         catch (err) {
                             console.error(`Error updating message for ${user.slackId}:`, err);
                         }
-                    }, 300000);
+                    }, 900000);
                 }
             }
             catch (error) {
